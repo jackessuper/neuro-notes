@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block main %}
+<article class="chapter">
+  <p class="breadcrumb noprint"><a href="{{ root }}{{ section.slug }}/index.html">{{ section.title }}</a></p>
+  <h1>{{ page.title }}{% if page.emoji %} {{ page.emoji }}{% endif %}</h1>
+  {% if page.draft %}<p class="badge draft">Draft – not yet reviewed</p>{% endif %}
+  {% if page.description %}<p class="lede">{{ page.description }}</p>{% endif %}
+  {% if show_toc %}
+  <nav class="toc noprint" aria-label="On this page">
+    <details open>
+      <summary>On this page</summary>
+      <ol>
+        {% for t in page.toc if t.level == 2 %}
+        <li><a href="#{{ t.id }}">{{ t.name }}</a></li>
+        {% endfor %}
+      </ol>
+    </details>
+  </nav>
+  {% endif %}
+  {{ page.html|safe }}
+</article>
+<nav class="pagination noprint" aria-label="Chapter navigation">
+  {% if prev %}<a class="pill prev" href="{{ root }}{{ prev.url }}">← {{ prev.title }}</a>{% else %}<span></span>{% endif %}
+  {% if next %}<a class="pill next" href="{{ root }}{{ next.url }}">{{ next.title }} →</a>{% endif %}
+</nav>
+{% endblock %}

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}{{ page.title }} – {{ settings.name }}{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#5b4bb5" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#3f3488" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>{{ settings.favicon_emoji }}</text></svg>">
+  {% set desc = page.description or settings.tagline %}
+  <meta name="description" content="{{ desc }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ settings.name }}">
+  <meta property="og:title" content="{{ page.title }}">
+  <meta property="og:description" content="{{ desc }}">
+  {% if settings.site_url %}
+  <link rel="canonical" href="{{ settings.site_url }}/{{ page.url }}">
+  <meta property="og:url" content="{{ settings.site_url }}/{{ page.url }}">
+  {% endif %}
+  <link rel="stylesheet" href="{{ root }}static/style.css">
+  {% if settings.goatcounter_code %}
+  <script data-goatcounter="https://{{ settings.goatcounter_code }}.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+  {% endif %}
+</head>
+<body>
+<header class="noprint">
+  <nav id="navbar" class="wrapped" aria-label="Main">
+    <a id="site-title" href="{{ root }}index.html">{{ settings.favicon_emoji }} {{ settings.name }}</a>
+    <div id="navbar-right">
+      {% for s in sections %}
+      <a href="{{ root }}{{ s.slug }}/index.html"{% if page.section == s.slug %} aria-current="page"{% endif %}>{{ s.title }}</a>
+      {% endfor %}
+      {% if feedback_href %}
+      <a href="{{ feedback_href }}">Feedback</a>
+      {% endif %}
+    </div>
+  </nav>
+</header>
+
+<main class="wrapped">
+{% block main %}{% endblock %}
+</main>
+
+<footer class="noprint wrapped">
+  <p>
+    <strong>{{ settings.name }}</strong>
+    {% if settings.author %} · made by {{ settings.author }}{% endif %}
+    {% if feedback_href %} · <a href="{{ feedback_href }}">Send feedback</a>{% endif %}
+  </p>
+  <p class="muted">Educational notes for clinicians in training. Not a substitute for local guidelines, senior advice or your own clinical judgement. © {{ year }}</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ page.title }} – {{ settings.name }}{% endblock %}
+{% block main %}
+<article class="home">
+  {{ page.html|safe }}
+  <section class="cards">
+    {% for s in sections %}
+    <a class="card" href="{{ root }}{{ s.slug }}/index.html">
+      <span class="card-emoji" aria-hidden="true">{{ s.emoji }}</span>
+      <span class="card-body">
+        <strong>{{ s.title }}</strong>
+        <span>{{ s.blurb }}</span>
+        <span class="card-cta">{{ s.cta }} →</span>
+      </span>
+    </a>
+    {% endfor %}
+  </section>
+</article>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block main %}
+<article>
+  <h1>{{ page.title }}{% if page.emoji %} {{ page.emoji }}{% endif %}</h1>
+  {% if page.description %}<p class="lede">{{ page.description }}</p>{% endif %}
+  {{ page.html|safe }}
+  <h2 id="chapters">Chapters 📚</h2>
+  {% for label, chapters in groups %}
+  <section class="chapter-group">
+    <h3>{{ label }}</h3>
+    <ol class="chapter-list">
+      {% for c in chapters %}
+      <li>
+        <a href="{{ root }}{{ c.url }}">{% if c.emoji %}<span aria-hidden="true">{{ c.emoji }}</span> {% endif %}{{ c.title }}</a>
+        {% if c.draft %}<span class="badge draft">Draft</span>{% endif %}
+        {% if c.description %}<span class="chapter-desc">{{ c.description }}</span>{% endif %}
+      </li>
+      {% endfor %}
+    </ol>
+  </section>
+  {% endfor %}
+</article>
+{% endblock %}
