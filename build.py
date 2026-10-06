@@ -252,6 +252,10 @@ def build_site(
     if static_dir.exists():
         shutil.copytree(static_dir, out_dir / "static", dirs_exist_ok=True)
     (out_dir / ".nojekyll").write_text("")
+    host = urllib.parse.urlsplit(settings["site_url"]).hostname if settings["site_url"] else None
+    if host:
+        # GitHub Pages reads the custom domain from a CNAME file at the site root.
+        (out_dir / "CNAME").write_text(host + "\n")
     logger.info("Built %d pages into %s", len(written), out_dir)
     return written
 

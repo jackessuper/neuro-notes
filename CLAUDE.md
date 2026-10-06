@@ -10,7 +10,7 @@ Clinical content is written or reviewed by the clinician. Chapters are `Draft: t
 python3 build.py              # render content/ -> site/
 python3 build.py serve        # build, serve at http://127.0.0.1:5017/, rebuild on save
 python3 build.py build --out /tmp/site
-python3 -m pytest tests/ -v   # 29 tests, build into tmp_path only
+python3 -m pytest tests/ -v   # 30 tests, build into tmp_path only
 ```
 
 Config is env vars with defaults (`config.py`; `.env` is read if present, see `.env.example`): `SITE_NAME`, `SITE_TAGLINE`, `SITE_AUTHOR`, `FEEDBACK_EMAIL`, `GOATCOUNTER_CODE`, `SITE_URL`, `PORT`, `FAVICON_EMOJI`.
@@ -52,11 +52,11 @@ Markdown extensions: `meta`, `toc` (h2–h3; an "On this page" box appears when 
 
 All links are **relative**: templates receive `root` (`""` for root pages, `../` for section pages) so the built site works from `file://`, a sub-path on GitHub Pages, or any host. Authors link between chapters as `[LP](lp.html)` and to home as `../index.html`.
 
-GoatCounter is only emitted when `GOATCOUNTER_CODE` is set; the feedback link (nav + footer) only when `FEEDBACK_EMAIL` is set. Canonical/OpenGraph URL tags only when `SITE_URL` is set.
+GoatCounter is only emitted when `GOATCOUNTER_CODE` is set; the feedback link (nav + footer) only when `FEEDBACK_EMAIL` is set. Canonical/OpenGraph URL tags and the GitHub Pages `CNAME` file (bare host of `SITE_URL`) only when `SITE_URL` is set.
 
 ## Deployment
 
-GitHub Pages via the workflow: in the repo, Settings → Pages → Source = "GitHub Actions", then set the site settings under Settings → Secrets and variables → Actions → **Variables** (`SITE_NAME`, `FEEDBACK_EMAIL`, `GOATCOUNTER_CODE`, `SITE_URL`, …). Remote: `git@github.com:jackessuper/neuro-notes.git` (not yet pushed).
+GitHub Pages via the workflow: in the repo, Settings → Pages → Source = "GitHub Actions", then set the site settings under Settings → Secrets and variables → Actions → **Variables** (`SITE_NAME`, `FEEDBACK_EMAIL`, `GOATCOUNTER_CODE`, `SITE_URL`, …). Repo: `github.com/jackessuper/neuro-notes` (public; Pages source = GitHub Actions). Custom domain **neurotips.net** (bought on Cloudflare 2026-10-06): apex A records → 185.199.108.153 / .109.153 / .110.153 / .111.153, `www` CNAME → `jackessuper.github.io`, Cloudflare proxy OFF (DNS only) so GitHub can issue the certificate.
 
 ## Gotchas
 

@@ -238,6 +238,13 @@ def test_site_url_adds_canonical_and_og_url(content, tmp_path):
     assert '<meta property="og:url" content="https://example.net/guide/beta.html">' in html
 
 
+def test_site_url_writes_cname_file_with_bare_host(content, tmp_path, built):
+    out_plain, _ = built
+    assert not (out_plain / "CNAME").exists()
+    out = build_with(content, tmp_path, site_url="https://neurotips.net/")
+    assert (out / "CNAME").read_text() == "neurotips.net\n"
+
+
 def test_chapter_in_unlisted_section_raises(tmp_path):
     root = tmp_path / "c"
     write(root / "index.md", "Title: Home\n\nhi\n")
