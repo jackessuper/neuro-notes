@@ -2,7 +2,7 @@
 
 Static educational website for neurology trainees, modelled on [gasnotes.net](https://gasnotes.net): one narrow column, big readable text, a coloured sticky header, rounded callouts, dark mode, works equally on a phone and a desktop. Starts with a **Survival Guide** (12 chapter stubs); more sections (study tools, deep dives) can be added later via `config.SECTIONS`.
 
-Clinical content is written by the clinician, not generated. Chapters are `Draft: true` until reviewed.
+Clinical content is written or reviewed by the clinician. Chapters are `Draft: true` until reviewed. The differential chapter is a paraphrase of Meltzer's *How to Think Like a Neurologist* ch. 1 (source credited in the page footer).
 
 ## Run
 
@@ -10,7 +10,7 @@ Clinical content is written by the clinician, not generated. Chapters are `Draft
 python3 build.py              # render content/ -> site/
 python3 build.py serve        # build, serve at http://127.0.0.1:5017/, rebuild on save
 python3 build.py build --out /tmp/site
-python3 -m pytest tests/ -v   # 26 tests, build into tmp_path only
+python3 -m pytest tests/ -v   # 29 tests, build into tmp_path only
 ```
 
 Config is env vars with defaults (`config.py`; `.env` is read if present, see `.env.example`): `SITE_NAME`, `SITE_TAGLINE`, `SITE_AUTHOR`, `FEEDBACK_EMAIL`, `GOATCOUNTER_CODE`, `SITE_URL`, `PORT`, `FAVICON_EMOJI`.
@@ -46,7 +46,7 @@ Front matter is python-markdown `meta` style (`Key: value` lines before the firs
 
 Chapter order on the index and for prev/next pills = group order, then `Order`, then title. Files starting with `_` are ignored. Nesting deeper than `section/page.md` fails the build.
 
-Markdown extensions: `meta`, `toc` (h2–h3; an "On this page" box appears when a chapter has ≥2 h2s), `tables`, `admonition` (`!!! note|tip|warning|danger|todo "Title"`), `attr_list`, `md_in_html`, `fenced_code`, `sane_lists`, `smarty`. The full feature set with examples is `content/style-guide.md`.
+Markdown extensions: `meta`, `toc` (h2–h3; an "On this page" box appears when a chapter has ≥2 h2s), `tables`, `admonition` (`!!! note|tip|warning|danger|todo "Title"`), `attr_list`, `md_in_html`, `fenced_code`, `sane_lists`, `smarty`. Every `<table>` is auto-wrapped in `<div class="table-scroll">` by `build.wrap_tables()` so wide tables pan sideways on phones (author-wrapped tables are not double-wrapped). TOC entries are rendered `|safe` because `smarty` emits entities. The full feature set with examples is `content/style-guide.md`.
 
 ### Templates and links
 

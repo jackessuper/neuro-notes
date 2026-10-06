@@ -47,7 +47,7 @@ Five flavours, written as `!!! kind "Title"` followed by an indented paragraph.
 | Head impulse | Abnormal (corrective saccade) | Normal |
 | Skew | Absent | May be present |
 
-Wide tables scroll sideways on a phone if wrapped in `<div class="table-scroll" markdown="1">` ... `</div>`.
+Every table is wrapped in a scroll container automatically, so wide tables pan sideways on a phone instead of breaking the layout.
 
 ## Lists
 

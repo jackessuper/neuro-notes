@@ -33,6 +33,18 @@ def test_parse_markdown_admonition_renders_styled_div():
     assert '<p class="admonition-title">Stop</p>' in html
 
 
+def test_parse_markdown_wraps_tables_in_scroll_container():
+    _, html, _ = parse_markdown("Title: X\n\n| a | b |\n|---|---|\n| 1 | 2 |\n")
+    assert html.startswith('<div class="table-scroll"><table>')
+    assert html.rstrip().endswith("</table></div>")
+
+
+def test_parse_markdown_does_not_double_wrap_author_scroll_container():
+    src = 'Title: X\n\n<div class="table-scroll" markdown="1">\n\n| a | b |\n|---|---|\n| 1 | 2 |\n\n</div>\n'
+    _, html, _ = parse_markdown(src)
+    assert html.count('class="table-scroll"') == 1
+
+
 def test_parse_markdown_fenced_code_renders_pre_block():
     _, html, _ = parse_markdown("Title: X\n\n```\nTitle: How to do an LP\n```\n")
     assert html.startswith("<pre><code>Title: How to do an LP")
@@ -152,6 +164,32 @@ def test_first_and_last_chapters_omit_missing_prev_next(built):
     assert "← Beta chapter" in last
 
 
+def test_toc_keeps_smart_quote_entities_unescaped(tmp_path):
+    root = tmp_path / "c"
+    write(root / "index.md", "Title: Home\n\nhi\n")
+    write(
+        root / "guide" / "index.md",
+        "Title: Guide\n\nintro\n",
+    )
+    write(
+        root / "guide" / "q.md",
+        'Title: Q\nGroup: core\nOrder: 1\n\n## The four kinds of "diagnosis"\n\nx\n\n## Two\n\ny\n',
+    )
+    out = tmp_path / "o"
+    build_site(
+        content_dir=root,
+        out_dir=out,
+        static_dir=config.STATIC_DIR,
+        templates_dir=config.TEMPLATES_DIR,
+        settings=dict(SETTINGS),
+        sections=SECTIONS,
+        guide_groups=GROUPS,
+    )
+    html = read(out, "guide/q.html")
+    assert "&amp;ldquo;" not in html
+    assert 'href="#the-four-kinds-of-diagnosis">The four kinds of &ldquo;diagnosis&rdquo;</a>' in html
+
+
 def test_chapter_without_two_h2s_has_no_toc(built):
     out, _ = built
     assert 'aria-label="On this page"' not in read(out, "guide/alpha.html")
@@ -164,9 +202,9 @@ def test_draft_chapter_shows_badge_and_admonition_renders(built):
     assert '<div class="admonition warning">' in html
 
 
-def test_table_renders_in_chapter(built):
+def test_table_renders_in_chapter_inside_scroll_container(built):
     out, _ = built
-    assert "<table>" in read(out, "guide/gamma.html")
+    assert '<div class="table-scroll"><table>' in read(out, "guide/gamma.html")
 
 
 def test_footer_shows_author_and_disclaimer_without_feedback_link(built):

@@ -11,7 +11,7 @@
       <summary>On this page</summary>
       <ol>
         {% for t in page.toc if t.level == 2 %}
-        <li><a href="#{{ t.id }}">{{ t.name }}</a></li>
+        <li><a href="#{{ t.id }}">{{ t.name|safe }}</a></li>
         {% endfor %}
       </ol>
     </details>

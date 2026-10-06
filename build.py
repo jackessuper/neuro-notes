@@ -72,10 +72,38 @@ class Page:
 
 def parse_markdown(text: str):
     md = markdown.Markdown(extensions=MARKDOWN_EXTENSIONS, extension_configs=MARKDOWN_EXTENSION_CONFIGS)
-    html = md.convert(text)
+    html = wrap_tables(md.convert(text))
     meta = {k.lower(): (v[0] if len(v) == 1 else "\n".join(v)) for k, v in md.Meta.items()}
     toc = getattr(md, "toc_tokens", [])
     return meta, html, toc
+
+
+def wrap_tables(html: str) -> str:
+    """Wrap each <table> in a scroll container so wide tables pan sideways on phones.
+
+    Tables the author already wrapped in `<div class="table-scroll">` are left alone.
+    """
+    out = []
+    pos = 0
+    while True:
+        start = html.find("<table", pos)
+        if start == -1:
+            out.append(html[pos:])
+            break
+        end = html.find("</table>", start)
+        if end == -1:
+            out.append(html[pos:])
+            break
+        end += len("</table>")
+        before = html[pos:start]
+        already = before.rstrip().endswith('<div class="table-scroll">')
+        out.append(before)
+        if already:
+            out.append(html[start:end])
+        else:
+            out.append('<div class="table-scroll">' + html[start:end] + "</div>")
+        pos = end
+    return "".join(out)
 
 
 def _as_bool(value: str) -> bool:
