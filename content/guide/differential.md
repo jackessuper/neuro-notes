@@ -70,7 +70,32 @@ Context is the rest of the history: past medical and surgical history, drugs, fa
 !!! danger "Beware of anchoring"
     Context is very useful for adding componentsto your history and exam, and for reordering a differential, but can lead to anchoring bias if over-relied upon. Sometimes the context is a red-herring, and working from the syndrome first can help to try and prevent mistakes..
 
-!!! tip "On the ward round"
-    Present it in this order: tempo, localisation, syndrome, context, differential, then the tests you want. Consultants visibly relax when they hear it.
+## Presenting a neurological case 🎤
+
+You can use the above scaffold to structure a case presentation. The level of detail should be tailored to the acuity of the case
+
+1. **The one-liner.** Age, highly relevant context, syndrome. *"A 62-year-old man with AF who isn't anticoagulated, with a hyperacute L hemispheric syndrome starting 90 minutes ago, NIHSS is 20"*; or *"a 40-year-old lady with a background of MS who self-ceased ofatumumab 2 years ago, presenting with acute apparent left eye optic neuritis"* If you say nothing else, this is the sentence that matters.
+2. **The story/tempo.** Onset, evolution, and what has happened since. Then the associated symptoms, and the pertinent negatives: the ones that would have changed the localisation (no headache, no neck pain, no seizure, no sensory symptoms).
+3. **Context.** Past history, drugs, family, social. Only the parts that order the differential, and say why you're mentioning them ("on apixaban, last dose last night", "smoker", "mum had MS").
+4. **Examination.** Positives first, then the negatives that matter, grouped by level: mental state and language, cranial nerves, limbs, gait. "Cranial nerves intact" is not a finding. "Fields full, no facial weakness, no dysarthria" is.
+5. **Syndrome.** Summarise by repeating the syndrome
+6. **Differential.** Most likely first, then the can't-miss, ordered by the context. Two or three things, not ten.
+7. **Plan.** What you're going to do: Disposition, tests, treatment, referrals.
+
+!!! note "Don't make it up"
+    Don't commit if you're unsure. If someone has a bizarre gait pattern and you don't know what it is just say so
+
+!!! note "Worked example: the whole thing in 60 seconds"
+    "Mrs S is a 58-year-old woman with poorly controlled type 2 diabetes, I think she has a subacute progressive peripheral neuropathy.
+    
+    Her symptoms started two months ago with burning numbness, and over time this has progressed to now reach her knees. She has now started falling, having two in the last fortnight. Relevant negatives include no back pain, no bladder or bowel symptoms, no symptoms in the hands, and no family history. She does not drink significant alcohol. 
+    
+    Examination showed distal sensory loss to the knees in a stocking distribution, absent ankle jerks, reduced vibration at the toes and a positive Rombergs. There was no weakness in the legs and the upper limbs examined normally, without evidence of distal sensory loss and with intact reflexes.
+    
+    To summarise:  So this is a subacute, length-dependent sensory-predominant neuropathy.
+    
+    I think this could be related to diabetes, but the tempo is a bit fast and I would like to rule out other causes of periphereal neuropathy.
+    
+    I think she needs admission for physio review, and would like to test with a neuropathy screen and consider an inpatient nerve conduction study"
 
 *Adapted and condensed from Chapter 1 of* How to Think Like a Neurologist *(Ethan Meltzer, Oxford University Press), which builds on Berkowitz's* Clinical Neurology and Neuroanatomy *and* Adams and Victor's Principles of Neurology.
