@@ -3,7 +3,7 @@ Emoji: 🧩
 Description: Tempo plus localisation gives you the syndrome; syndrome plus context gives you the differential.
 Group: core
 Order: 10
-Draft: true
+Draft: false
 
 !!! note "tl;dr:"
     **Tempo + Localisation = Syndrome**<br>
@@ -67,8 +67,8 @@ The syndrome is your clinical assessment: "an acute, rapidly progressive cervica
 
 Context is the rest of the history: past medical and surgical history, drugs, family, social history, etc. You need to reason out what is relevant. Context orders the differential, but rarely removes anything from it (e.g patients with HIV get opportunistic infections, but the white matter hyperintensity could still be MS).
 
-!!! danger "Context is also where anchoring lives"
-    Context is the fastest way to narrow a differential and the commonest reason for getting it wrong. Define the syndrome **before** you let the context in.
+!!! danger "Beware of anchoring"
+    Context is very useful for adding componentsto your history and exam, and for reordering a differential, but can lead to anchoring bias if over-relied upon. Sometimes the context is a red-herring, and working from the syndrome first can help to try and prevent mistakes..
 
 !!! tip "On the ward round"
     Present it in this order: tempo, localisation, syndrome, context, differential, then the tests you want. Consultants visibly relax when they hear it.
