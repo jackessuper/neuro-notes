@@ -29,7 +29,7 @@ _load_dotenv(PROJECT_ROOT / ".env")
 def site_settings() -> dict:
     """Read settings fresh each call so tests can override via env."""
     return {
-        "name": os.getenv("SITE_NAME", "Neuro Notes"),
+        "name": os.getenv("SITE_NAME", "NeuroTips"),
         "tagline": os.getenv("SITE_TAGLINE", "A survival guide for people getting started in neurology."),
         "author": os.getenv("SITE_AUTHOR", ""),
         "feedback_email": os.getenv("FEEDBACK_EMAIL", ""),

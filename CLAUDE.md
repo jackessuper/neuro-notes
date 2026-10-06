@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Static educational website for neurology trainees, modelled on [gasnotes.net](https://gasnotes.net): one narrow column, big readable text, a coloured sticky header, rounded callouts, dark mode, works equally on a phone and a desktop. Starts with a **Survival Guide** (12 chapter stubs); more sections (study tools, deep dives) can be added later via `config.SECTIONS`.
+Static educational website for neurology trainees (site name **NeuroTips**, env `SITE_NAME`; the directory and repo keep the `neuro-notes` slug), modelled on [gasnotes.net](https://gasnotes.net): one narrow column, big readable text, a coloured sticky header, rounded callouts, dark mode, works equally on a phone and a desktop. Starts with a **Survival Guide** (12 chapter stubs); more sections (study tools, deep dives) can be added later via `config.SECTIONS`.
 
 Clinical content is written or reviewed by the clinician. Chapters are `Draft: true` until reviewed. The differential chapter is a paraphrase of Meltzer's *How to Think Like a Neurologist* ch. 1 (source credited in the page footer).
 

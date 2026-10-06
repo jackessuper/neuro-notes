@@ -1,4 +1,4 @@
-# Neuro Notes (working title)
+# NeuroTips
 
 A survival guide for people getting started in neurology, in the spirit of [Gas Notes](https://gasnotes.net).
 
