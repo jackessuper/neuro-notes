@@ -42,7 +42,7 @@ The categories blur into each other a bit. What matters is you can tease it out 
 - **Chronic:** there may be no start at all, only a time in the past when the family is sure things were fine.
 
 !!! warning "Tempo traps"
-    The tempo of the *symptoms* is not always the tempo of the *disease*. A tumour can grown for years and then suddenly cause a (hyperacute) seizure. Compressive lesions can have any tempo. For episodic illnesses (seizures, relapsing MS), consider defining the tempo of each attack *and* of the overall course: a first-ever seizure that becomes several a day over two weeks is a subacute illness, and that points you at infection or inflammation.
+    The tempo of the *symptoms* is not always the tempo of the *disease*. A tumour can grow for years and then suddenly cause a (hyperacute) seizure. Compressive lesions can have any tempo. For episodic illnesses (seizures, relapsing MS), consider defining the tempo of each attack *and* of the overall course: a first-ever seizure that becomes several a day over two weeks is a subacute illness, and that points you at infection or inflammation.
 
 ## Step 2: Localisation 📍
 
