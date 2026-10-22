@@ -1,9 +1,11 @@
+---
 Title: How to do a lumbar puncture
 Emoji: 💉
 Description: Consent, contraindications, positioning, technique and what to send.
 Group: core
 Order: 60
 Draft: true
+---
 
 !!! todo "Chapter not written yet"
     The headings below are a suggested skeleton. Rewrite, reorder or delete them freely.

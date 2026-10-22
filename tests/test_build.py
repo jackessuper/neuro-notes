@@ -307,3 +307,37 @@ def test_real_content_every_chapter_has_group_and_order():
         if p.section == "guide" and not p.is_index:
             assert p.group in dict(config.GUIDE_GROUPS), p.slug
             assert p.order != 999, f"{p.slug} has no Order:"
+
+
+# ---- front matter written by Pages CMS ------------------------------------
+
+
+def test_parse_markdown_accepts_yaml_fenced_front_matter():
+    meta, html, _ = parse_markdown("---\nTitle: Hello\nOrder: 3\nDraft: true\n---\n\nBody.\n")
+    assert meta == {"title": "Hello", "order": "3", "draft": "true"}
+    assert html == "<p>Body.</p>"
+
+
+def test_parse_markdown_strips_yaml_quotes_from_meta_values():
+    meta, _, _ = parse_markdown("---\nTitle: \"Stroke: the basics\"\nDescription: 'It''s short'\n---\n\nx\n")
+    assert meta["title"] == "Stroke: the basics"
+    assert meta["description"] == "It's short"
+
+
+def test_real_content_front_matter_is_yaml_fenced_for_the_cms():
+    for path in sorted(config.CONTENT_DIR.rglob("*.md")):
+        text = path.read_text(encoding="utf-8")
+        assert text.startswith("---\n"), f"{path.name}: Pages CMS needs a '---' fenced front matter block"
+        assert "\n---\n" in text[4:], f"{path.name}: front matter block is not closed"
+
+
+def test_pages_cms_config_covers_every_front_matter_key():
+    import yaml
+
+    cfg = yaml.safe_load((config.PROJECT_ROOT / ".pages.yml").read_text(encoding="utf-8"))
+    chapters = next(c for c in cfg["content"] if c["name"] == "chapters")
+    assert chapters["path"] == "content/guide"
+    names = {f["name"] for f in chapters["fields"]}
+    assert {"Title", "Emoji", "Description", "Group", "Order", "Draft", "body"} <= names
+    group = next(f for f in chapters["fields"] if f["name"] == "Group")
+    assert [v["name"] for v in group["options"]["values"]] == [k for k, _ in config.GUIDE_GROUPS]

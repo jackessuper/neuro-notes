@@ -70,10 +70,18 @@ class Page:
         return "../" * depth
 
 
+def _unquote(value: str) -> str:
+    """Pages CMS writes YAML front matter, so a value with a colon or apostrophe arrives quoted."""
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in "\"'":
+        inner = value[1:-1]
+        return inner.replace("''", "'") if value[0] == "'" else inner.replace('\\"', '"')
+    return value
+
+
 def parse_markdown(text: str):
     md = markdown.Markdown(extensions=MARKDOWN_EXTENSIONS, extension_configs=MARKDOWN_EXTENSION_CONFIGS)
     html = wrap_tables(md.convert(text))
-    meta = {k.lower(): (v[0] if len(v) == 1 else "\n".join(v)) for k, v in md.Meta.items()}
+    meta = {k.lower(): _unquote(v[0] if len(v) == 1 else "\n".join(v)) for k, v in md.Meta.items()}
     toc = getattr(md, "toc_tokens", [])
     return meta, html, toc
 

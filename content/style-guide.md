@@ -1,17 +1,21 @@
+---
 Title: Writing style guide
 Emoji: ✍️
 Description: Every formatting feature the site supports, in one page. Not linked from the navigation.
 Draft: true
+---
 
-This page is the kitchen sink. Copy from it when writing a chapter. Chapters live in `content/guide/*.md` and start with a front-matter block:
+This page is the kitchen sink. Copy from it when writing a chapter. Chapters live in `content/guide/*.md` and start with a front-matter block between `---` lines (that is what the browser editor at app.pagescms.org reads and writes):
 
 ```
+---
 Title: How to do an LP
 Emoji: 💉
 Description: One sentence shown on the chapter list and under the heading.
 Group: core
 Order: 60
 Draft: true
+---
 ```
 
 `Group` must be one of the keys in `config.GUIDE_GROUPS`; `Order` sorts within the group. Remove `Draft` (or set it to `false`) once the chapter is reviewed.

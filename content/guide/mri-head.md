@@ -1,9 +1,11 @@
+---
 Title: How to read an MRI head
 Emoji: 🧲
 Description: What each sequence is for, in one line each, and a short order to look at them in.
 Group: core
 Order: 50
 Draft: true
+---
 
 !!! note "tl;dr:"
     **T1 is for anatomy and contrast. T2 and FLAIR are for water. DWI is for crowding. SWI and GRE are for metal.**<br>

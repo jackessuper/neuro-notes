@@ -1,9 +1,11 @@
+---
 Title: Building a neurological differential
 Emoji: 🧩
 Description: Tempo plus localisation gives you the syndrome; syndrome plus context gives you the differential.
 Group: core
 Order: 10
 Draft: false
+---
 
 !!! note "tl;dr:"
     **Tempo + Localisation = Syndrome**<br>

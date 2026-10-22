@@ -1,9 +1,11 @@
+---
 Title: Headache
 Emoji: 🤕
 Description: Red flags, the secondary causes you cannot miss, and a practical approach to the rest.
 Group: headache
 Order: 10
 Draft: true
+---
 
 !!! todo "Chapter not written yet"
     The headings below are a suggested skeleton. Rewrite, reorder or delete them freely.

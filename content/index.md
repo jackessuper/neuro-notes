@@ -1,5 +1,7 @@
+---
 Title: Welcome
 Description: A survival guide for people getting started in neurology.
+---
 
 # Welcome 👋
 

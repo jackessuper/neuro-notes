@@ -1,9 +1,11 @@
+---
 Title: Localisation
 Emoji: 📍
 Description: Working out where the lesion is from the history and examination.
 Group: core
 Order: 20
 Draft: true
+---
 
 !!! note "tl;dr:"
     **Longitude = which pathway. Latitude = which level.** Find where they cross and you've found the lesion.<br>

@@ -1,9 +1,11 @@
+---
 Title: Stroke call
 Emoji: 🚨
 Description: What to do, in order, from the phone call to the decision.
 Group: core
 Order: 30
 Draft: true
+---
 
 !!! todo "Chapter not written yet"
     The headings below are a suggested skeleton. Rewrite, reorder or delete them freely.

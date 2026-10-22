@@ -10,7 +10,7 @@ Clinical content is written or reviewed by the clinician. Chapters are `Draft: t
 python3 build.py              # render content/ -> site/
 python3 build.py serve        # build, serve at http://127.0.0.1:5017/, rebuild on save
 python3 build.py build --out /tmp/site
-python3 -m pytest tests/ -v   # 30 tests, build into tmp_path only
+python3 -m pytest tests/ -v   # 34 tests, build into tmp_path only
 ```
 
 Config is env vars with defaults (`config.py`; `.env` is read if present, see `.env.example`): `SITE_NAME`, `SITE_TAGLINE`, `SITE_AUTHOR`, `FEEDBACK_EMAIL`, `GOATCOUNTER_CODE`, `SITE_URL`, `PORT`, `FAVICON_EMOJI`.
@@ -33,7 +33,7 @@ site/                    Build output (gitignored). GitHub Pages builds it in CI
 
 ### Content model
 
-Front matter is python-markdown `meta` style (`Key: value` lines before the first blank line):
+Front matter is python-markdown `meta` style (`Key: value` lines) **between `---` fences** — the fences are what Pages CMS reads and writes, and a test fails if a content file lacks them. Values arrive YAML-quoted when they contain a colon or apostrophe; `build._unquote()` strips the quotes:
 
 | Key | Required | Meaning |
 |---|---|---|
@@ -53,6 +53,10 @@ Markdown extensions: `meta`, `toc` (h2–h3; an "On this page" box appears when 
 All links are **relative**: templates receive `root` (`""` for root pages, `../` for section pages) so the built site works from `file://`, a sub-path on GitHub Pages, or any host. Authors link between chapters as `[LP](lp.html)` and to home as `../index.html`.
 
 GoatCounter is only emitted when `GOATCOUNTER_CODE` is set; the feedback link (nav + footer) only when `FEEDBACK_EMAIL` is set. Canonical/OpenGraph URL tags and the GitHub Pages `CNAME` file (bare host of `SITE_URL`) only when `SITE_URL` is set.
+
+## Editing in the browser (Pages CMS)
+
+`.pages.yml` at the repo root configures [Pages CMS](https://app.pagescms.org) (hosted; sign in with GitHub, install its GitHub App on `jackessuper` for this repo). It lists the Survival Guide chapters as a collection (`content/guide`, front-matter fields as form inputs: Title, Emoji, Description, Group select, Order, Draft toggle) plus the home page, guide landing page and style guide as single files. The body is a Markdown **code** field, not rich-text, so the `!!! note` callouts and tables survive a save untouched. Saving commits to `main`, which triggers the Pages deploy (about a minute). Field names must match the front-matter keys' capitalisation exactly; `tests/test_build.py::test_pages_cms_config_covers_every_front_matter_key` checks the config against `config.GUIDE_GROUPS`, and PyYAML is in `requirements.txt` only for that test.
 
 ## Deployment
 

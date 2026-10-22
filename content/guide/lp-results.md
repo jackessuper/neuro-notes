@@ -1,9 +1,11 @@
+---
 Title: How to interpret LP results
 Emoji: 🔬
 Description: Cells, protein, glucose, pressure and the special tests, with the patterns that matter.
 Group: core
 Order: 70
 Draft: true
+---
 
 !!! todo "Chapter not written yet"
     The headings below are a suggested skeleton. Rewrite, reorder or delete them freely.

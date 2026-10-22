@@ -1,9 +1,11 @@
+---
 Title: How to read a stroke CT and CTA
 Emoji: 🩻
 Description: Four questions for the non-contrast CT, then where to look on the angiogram. The quick version.
 Group: core
 Order: 40
 Draft: true
+---
 
 !!! note "tl;dr:"
     **Non-contrast CT, in order: 1. Blood? 2. Hyperdense vessel? 3. Early ischaemic change (ASPECTS)? 4. Anything else?**<br>

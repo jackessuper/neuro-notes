@@ -1,9 +1,11 @@
+---
 Title: Stroke secondary prevention
 Emoji: 🛡️
 Description: Antiplatelets, anticoagulation, lipids, blood pressure, carotids and the lifestyle conversation.
 Group: stroke
 Order: 20
 Draft: true
+---
 
 !!! todo "Chapter not written yet"
     The headings below are a suggested skeleton. Rewrite, reorder or delete them freely.

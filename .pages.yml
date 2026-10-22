@@ -1,0 +1,86 @@
+# Pages CMS (app.pagescms.org) configuration: edit the site's Markdown in the browser.
+# Saving in the CMS commits to this repo; a push to main rebuilds and deploys the site.
+# Field names match the front-matter keys exactly (build.py lowercases them).
+media:
+  input: static/images
+  output: /static/images
+
+content:
+  - name: chapters
+    label: Survival Guide chapters
+    type: collection
+    path: content/guide
+    exclude: [index.md]
+    filename: "{primary}.md"
+    view:
+      fields: [Title, Group, Order, Draft]
+      primary: Title
+      sort: [Group, Order, Title]
+      search: [Title, Description]
+      default:
+        sort: Order
+        order: asc
+    fields:
+      - name: Title
+        type: string
+        required: true
+      - name: Emoji
+        type: string
+        description: One emoji, shown after the title and in the chapter list.
+      - name: Description
+        type: string
+        description: "One sentence: the lede under the title and the subtitle in the chapter list."
+      - name: Group
+        type: select
+        required: true
+        options:
+          values:
+            - { name: core, label: "Core skills 🧰" }
+            - { name: stroke, label: "Stroke 🧠" }
+            - { name: headache, label: "Headache 🤕" }
+      - name: Order
+        type: number
+        required: true
+        description: Sort position within the group (10, 20, 30 ...).
+        options:
+          min: 0
+      - name: Draft
+        type: boolean
+        default: true
+        description: On = shows the "Draft, not yet reviewed" badge.
+      - name: body
+        type: code
+        label: Chapter (Markdown)
+        description: 'Markdown with the site extras: !!! note|tip|warning|danger "Title" callouts (indent the body by four spaces), tables, ## headings. See /style-guide.html.'
+        options:
+          format: markdown
+
+  - name: guide-index
+    label: Survival Guide landing page
+    type: file
+    path: content/guide/index.md
+    fields:
+      - { name: Title, type: string, required: true }
+      - { name: Emoji, type: string }
+      - { name: Description, type: string }
+      - { name: body, type: code, label: Intro (Markdown), options: { format: markdown } }
+
+  - name: home
+    label: Home page
+    type: file
+    path: content/index.md
+    fields:
+      - { name: Title, type: string, required: true }
+      - { name: Description, type: string }
+      - { name: body, type: code, label: Page (Markdown), options: { format: markdown } }
+
+  - name: style-guide
+    label: Writing style guide
+    type: file
+    path: content/style-guide.md
+    fields:
+      - { name: Title, type: string, required: true }
+      - { name: Emoji, type: string }
+      - { name: Description, type: string }
+      - { name: Draft, type: boolean }
+      - { name: body, type: code, label: Page (Markdown), options: { format: markdown } }
