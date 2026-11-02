@@ -4,7 +4,7 @@ Emoji: 🔎
 Description: Which tests to order, when, and what each one changes.
 Group: stroke
 Order: 10
-Draft: true
+Status: soon
 ---
 
 !!! todo "Chapter not written yet"

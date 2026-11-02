@@ -10,6 +10,11 @@
       <span class="card-body">
         <strong>{{ s.title }}</strong>
         <span>{{ s.blurb }}</span>
+        <span class="card-tally">
+          {% for t in tallies[s.slug] if t.count %}
+          <span class="badge {{ t.key }}">{{ t.count }} {{ t.label|lower }}</span>
+          {% endfor %}
+        </span>
         <span class="card-cta">{{ s.cta }} →</span>
       </span>
     </a>

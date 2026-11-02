@@ -78,12 +78,54 @@ def test_load_pages_skips_underscore_prefixed_files(tmp_path):
     assert [p.slug for p in load_pages(root)] == ["index"]
 
 
+# ---- status ------------------------------------------------------------------
+
+
+def _status_of(tmp_path, front):
+    root = tmp_path / "c"
+    write(root / "guide" / "x.md", f"Title: X\n{front}\nbody\n")
+    return load_pages(root)[0].status
+
+
+def test_load_page_reads_status_case_insensitively(tmp_path):
+    assert _status_of(tmp_path, "Status: Soon\n") == "soon"
+
+
+@pytest.mark.parametrize(
+    "front, expected",
+    [
+        ("Draft: true\n", "draft"),
+        ("Draft: false\n", "ready"),
+        ("", "ready"),
+        ("Status: draft\nDraft: false\n", "draft"),
+    ],
+)
+def test_load_page_status_falls_back_to_legacy_draft_flag(tmp_path, front, expected):
+    assert _status_of(tmp_path, front) == expected
+
+
+def test_load_page_unknown_status_raises(tmp_path):
+    root = tmp_path / "c"
+    write(root / "guide" / "x.md", "Title: X\nStatus: finished\n\nbody\n")
+    with pytest.raises(ValueError, match="unknown 'Status:' 'finished'"):
+        load_pages(root)
+
+
+def test_draft_property_tracks_status(tmp_path):
+    root = tmp_path / "c"
+    write(root / "guide" / "d.md", "Title: D\nStatus: draft\n\nbody\n")
+    write(root / "guide" / "s.md", "Title: S\nStatus: soon\n\nbody\n")
+    by_slug = {p.slug: p for p in load_pages(root)}
+    assert by_slug["d"].draft is True
+    assert by_slug["s"].draft is False
+
+
 # ---- ordering -----------------------------------------------------------------
 
 
 def test_chapters_for_orders_by_group_then_order(content):
     pages = load_pages(content)
-    assert [c.slug for c in chapters_for(pages, "guide", GROUPS)] == ["alpha", "beta", "gamma"]
+    assert [c.slug for c in chapters_for(pages, "guide", GROUPS)] == ["alpha", "beta", "gamma", "delta"]
 
 
 def test_chapters_for_unknown_group_raises(tmp_path):
@@ -114,6 +156,7 @@ def test_build_writes_every_page_and_static_assets(built):
     assert rel == [
         "guide/alpha.html",
         "guide/beta.html",
+        "guide/delta.html",
         "guide/gamma.html",
         "guide/index.html",
         "index.html",
@@ -132,14 +175,49 @@ def test_home_page_has_title_body_and_section_card(built):
     assert 'href="static/style.css"' in html
 
 
-def test_section_index_lists_chapters_grouped_in_order(built):
+TALLY_RE = re.compile(r'<span class="badge (\w+)">(\d+) [^<]+</span>')
+
+
+def test_home_section_card_counts_chapters_by_status(built):
+    out, _ = built
+    card = read(out, "index.html").split('class="card"')[1]
+    assert TALLY_RE.findall(card) == [("ready", "2"), ("draft", "1"), ("soon", "1")]
+    assert '<span class="badge soon">1 coming soon</span>' in card
+
+
+def test_home_section_card_omits_statuses_with_no_chapters(content, tmp_path):
+    (content / "guide" / "alpha.md").unlink()
+    out = build_with(content, tmp_path)
+    assert [k for k, _ in TALLY_RE.findall(read(out, "index.html"))] == ["ready", "soon"]
+
+
+ROW_RE = re.compile(r'<li data-status="(\w+)">\s*<a href="\.\./guide/([a-z-]+)\.html"')
+
+
+def pager(html):
+    """{'prev': slug, 'next': slug} for the chapter pager links present on a page."""
+    return dict(re.findall(r'class="pill (prev|next)" href="\.\./guide/([a-z-]+)\.html"', html))
+
+
+def test_section_index_lists_chapters_grouped_in_order_with_status(built):
     out, _ = built
     html = read(out, "guide/index.html")
     assert html.index("<h3>Core</h3>") < html.index("<h3>Stroke</h3>")
-    links = re.findall(r'<li>\s*<a href="\.\./guide/([a-z]+)\.html"', html)
-    assert links == ["alpha", "beta", "gamma"]
+    assert ROW_RE.findall(html) == [("draft", "alpha"), ("ready", "beta"), ("ready", "gamma"), ("soon", "delta")]
+    assert re.findall(r'<span class="badge (\w+)">(Ready|Draft|Coming soon)</span>\s*<span class="chapter-desc">', html)
     assert "Second in core." in html
-    assert 'class="badge draft"' in html
+    assert '<span class="badge soon">Coming soon</span>' in html
+
+
+def test_section_index_key_explains_and_counts_each_status(built):
+    out, _ = built
+    html = read(out, "guide/index.html")
+    key = re.findall(
+        r'<li><span class="badge (\w+)">[^<]+</span>\s*<span class="status-blurb">[^<]*<span class="status-count">\((\d+)\)</span>',
+        html,
+    )
+    assert key == [("ready", "2"), ("draft", "1"), ("soon", "1")]
+    assert html.index('class="status-key"') < html.index("<h3>Core</h3>")
 
 
 def test_chapter_page_has_heading_description_toc_and_prev_next(built):
@@ -149,19 +227,39 @@ def test_chapter_page_has_heading_description_toc_and_prev_next(built):
     assert '<p class="lede">Second in core.</p>' in html
     assert 'aria-label="On this page"' in html
     assert 'href="#first-heading"' in html and 'href="#second-heading"' in html
-    assert 'href="../guide/alpha.html">← Alpha chapter</a>' in html
-    assert 'href="../guide/gamma.html">Gamma chapter →</a>' in html
+    assert pager(html) == {"prev": "alpha", "next": "gamma"}
     assert 'href="../static/style.css"' in html
 
 
-def test_first_and_last_chapters_omit_missing_prev_next(built):
+def test_first_and_last_readable_chapters_omit_missing_prev_next(built):
     out, _ = built
-    first = read(out, "guide/alpha.html")
-    last = read(out, "guide/gamma.html")
-    assert "← " not in first
-    assert "Beta chapter →" in first
-    assert " →</a>" not in last
-    assert "← Beta chapter" in last
+    assert pager(read(out, "guide/alpha.html")) == {"next": "beta"}
+    assert pager(read(out, "guide/gamma.html")) == {"prev": "beta"}
+
+
+def test_pager_skips_coming_soon_chapters(built):
+    out, _ = built
+    assert "guide/delta.html" not in read(out, "guide/gamma.html").split('class="pagination')[1]
+    assert pager(read(out, "guide/delta.html")) == {"prev": "gamma"}
+
+
+def test_coming_soon_chapter_shows_planned_sections_instead_of_skeleton(built):
+    out, _ = built
+    html = read(out, "guide/delta.html")
+    assert '<p class="badge soon">Coming soon</p>' in html
+    assert '<div class="admonition todo coming-soon">' in html
+    assert re.findall(r'<li class="planned-item">(.*?)</li>', html) == ["Planned one", "Planned two"]
+    assert "Skeleton note for the author." not in html
+    assert '<h2 id="planned-one"' not in html
+    assert '<meta name="robots" content="noindex">' in html
+    assert "noindex" not in read(out, "guide/beta.html")
+
+
+def test_ready_chapter_shows_ready_badge(built):
+    out, _ = built
+    html = read(out, "guide/beta.html")
+    assert '<p class="badge ready">Ready – reviewed</p>' in html
+    assert "badge draft" not in html
 
 
 def test_toc_keeps_smart_quote_entities_unescaped(tmp_path):
@@ -198,7 +296,7 @@ def test_chapter_without_two_h2s_has_no_toc(built):
 def test_draft_chapter_shows_badge_and_admonition_renders(built):
     out, _ = built
     html = read(out, "guide/alpha.html")
-    assert "Draft – not yet reviewed" in html
+    assert '<p class="badge draft">Draft – not yet reviewed</p>' in html
     assert '<div class="admonition warning">' in html
 
 
@@ -284,7 +382,7 @@ def test_real_content_builds_with_all_listed_chapters(tmp_path):
     built = {p.stem for p in (out / "guide").glob("*.html")} - {"index"}
     assert built == expected
     index = read(out, "guide/index.html")
-    order = re.findall(r'<li>\s*<a href="\.\./guide/([a-z-]+)\.html"', index)
+    order = [slug for _status, slug in ROW_RE.findall(index)]
     assert order == [
         "differential",
         "localisation",
@@ -307,6 +405,13 @@ def test_real_content_every_chapter_has_group_and_order():
         if p.section == "guide" and not p.is_index:
             assert p.group in dict(config.GUIDE_GROUPS), p.slug
             assert p.order != 999, f"{p.slug} has no Order:"
+
+
+def test_real_content_every_chapter_sets_an_explicit_status():
+    statuses = {key for key, _label, _blurb in config.STATUSES}
+    for p in load_pages(config.CONTENT_DIR):
+        if p.section == "guide" and not p.is_index:
+            assert p.meta.get("status", "").lower() in statuses, f"{p.slug} needs a Status: line"
 
 
 # ---- front matter written by Pages CMS ------------------------------------
@@ -338,6 +443,8 @@ def test_pages_cms_config_covers_every_front_matter_key():
     chapters = next(c for c in cfg["content"] if c["name"] == "chapters")
     assert chapters["path"] == "content/guide"
     names = {f["name"] for f in chapters["fields"]}
-    assert {"Title", "Emoji", "Description", "Group", "Order", "Draft", "body"} <= names
+    assert {"Title", "Emoji", "Description", "Group", "Order", "Status", "body"} <= names
     group = next(f for f in chapters["fields"] if f["name"] == "Group")
     assert [v["name"] for v in group["options"]["values"]] == [k for k, _ in config.GUIDE_GROUPS]
+    status = next(f for f in chapters["fields"] if f["name"] == "Status")
+    assert [v["name"] for v in status["options"]["values"]] == [k for k, _, _ in config.STATUSES]

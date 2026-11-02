@@ -4,7 +4,7 @@ Emoji: 🛡️
 Description: Antiplatelets, anticoagulation, lipids, blood pressure, carotids and the lifestyle conversation.
 Group: stroke
 Order: 20
-Draft: true
+Status: soon
 ---
 
 !!! todo "Chapter not written yet"

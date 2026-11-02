@@ -3,8 +3,24 @@
 <article class="chapter">
   <p class="breadcrumb noprint"><a href="{{ root }}{{ section.slug }}/index.html">{{ section.title }}</a></p>
   <h1>{{ page.title }}{% if page.emoji %} {{ page.emoji }}{% endif %}</h1>
-  {% if page.draft %}<p class="badge draft">Draft – not yet reviewed</p>{% endif %}
+  {% if page.status == "ready" %}<p class="badge ready">Ready – reviewed</p>
+  {% elif page.status == "draft" %}<p class="badge draft">Draft – not yet reviewed</p>
+  {% else %}<p class="badge soon">Coming soon</p>{% endif %}
   {% if page.description %}<p class="lede">{{ page.description }}</p>{% endif %}
+  {% if page.is_soon %}
+  <div class="admonition todo coming-soon">
+    <p class="admonition-title">Not written yet</p>
+    <p>This chapter is on the list but hasn't been written.{% if planned %} When it is, it will cover:{% endif %}</p>
+    {% if planned %}
+    <ol class="planned">
+      {% for name in planned %}
+      <li class="planned-item">{{ name|safe }}</li>
+      {% endfor %}
+    </ol>
+    {% endif %}
+    <p><a href="{{ root }}{{ section.slug }}/index.html">See which chapters are ready →</a></p>
+  </div>
+  {% else %}
   {% if show_toc %}
   <nav class="toc noprint" aria-label="On this page">
     <details open>
@@ -18,6 +34,7 @@
   </nav>
   {% endif %}
   {{ page.html|safe }}
+  {% endif %}
 </article>
 <nav class="pagination noprint" aria-label="Chapter navigation">
   {% if prev %}<a class="pill prev" href="{{ root }}{{ prev.url }}">← {{ prev.title }}</a>{% else %}<span></span>{% endif %}

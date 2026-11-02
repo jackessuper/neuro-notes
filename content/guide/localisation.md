@@ -4,14 +4,18 @@ Emoji: 📍
 Description: Working out where the lesion is from the history and examination.
 Group: core
 Order: 20
-Draft: true
+Status: ready
 ---
 
 !!! note "tl;dr:"
     **Longitude = which pathway. Latitude = which level.** Find where they cross and you've found the lesion.<br>
     Two questions do most of the work: *upper or lower motor neuron?* and *what else is affected?*
 
-Localisation sounds like the scary part of neurology, but it is mostly a map-reading exercise. Three long pathways run the length of the nervous system (the meridians of longitude). Crossing them are the levels: cortex, brainstem, cord segments, roots, plexus, nerve, junction, muscle (the parallels of latitude). The pattern of weakness and sensory loss tells you *which pathways*. Everything else on the examination tells you *which level*. The lesion is where the two meet.
+Localisation can seem daunting but is mostly a map-reading exercise. It's a very logical area of medicine, which can be very satisfying (especially in light of a lot of the other uncertainties in neurology, medicine, and life. Localisation is a happy place).
+
+Three long pathways run the length of the nervous system (the meridians of longitude). Crossing them are the levels: cortex, brainstem, cord segments, roots, plexus, nerve, junction, muscle (the parallels of latitude).
+
+The pattern of weakness and sensory loss tells you *which pathways*. Everything else on the examination tells you *which level*. The lesion is where the two meet.
 
 The symptoms and signs tell you **where** the problem is. They almost never tell you **what** it is. That's what [tempo and context](differential.html) are for.
 
@@ -35,8 +39,6 @@ This is the first fork in the road, because it tells you central versus peripher
 1. **Motor (corticospinal).** Motor cortex (precentral gyrus) → corona radiata → internal capsule → cerebral peduncle → ventral pons and medulla → **crosses at the foramen magnum** → lateral column of the cord → anterior horn cell → root → plexus → nerve → neuromuscular junction → muscle.
 2. **Vibration and proprioception (dorsal columns).** Receptor → nerve → plexus → dorsal root → *ipsilateral* dorsal column → **crosses at the foramen magnum** → medial lemniscus → thalamus → parietal cortex.
 3. **Pain and temperature (spinothalamic).** Receptor → nerve → root → **crosses within a segment or two of entering the cord** → anterolateral cord → lateral brainstem → thalamus → cortex.
-
-Light touch travels in both sensory pathways, which is why it's the least useful modality to test.
 
 !!! tip "The crossing rule"
     Motor and vibration/proprioception cross at the top of the cord. Pain and temperature cross at the bottom, where they enter. So:

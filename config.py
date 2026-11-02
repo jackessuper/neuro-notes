@@ -60,3 +60,12 @@ GUIDE_GROUPS = [
     ("stroke", "Stroke 🧠"),
     ("headache", "Headache 🤕"),
 ]
+
+# How far a chapter has got: (key, label, one-line meaning), in display order.
+# A chapter's `Status:` value must be one of these keys. `soon` pages show their planned
+# h2 headings instead of the body and are skipped by the prev/next pager.
+STATUSES = [
+    ("ready", "Ready", "Written and reviewed. Use it."),
+    ("draft", "Draft", "Written but not fully reviewed. Double-check before you act on it."),
+    ("soon", "Coming soon", "Planned, not written yet."),
+]

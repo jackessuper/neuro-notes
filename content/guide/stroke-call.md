@@ -4,7 +4,7 @@ Emoji: 🚨
 Description: What to do, in order, from the phone call to the decision.
 Group: core
 Order: 30
-Draft: true
+Status: soon
 ---
 
 !!! todo "Chapter not written yet"

@@ -4,7 +4,7 @@ Emoji: 🔬
 Description: Cells, protein, glucose, pressure and the special tests, with the patterns that matter.
 Group: core
 Order: 70
-Draft: true
+Status: soon
 ---
 
 !!! todo "Chapter not written yet"

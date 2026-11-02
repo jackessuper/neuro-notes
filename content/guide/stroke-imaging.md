@@ -4,7 +4,7 @@ Emoji: 🩻
 Description: Four questions for the non-contrast CT, then where to look on the angiogram. The quick version.
 Group: core
 Order: 40
-Draft: true
+Status: draft
 ---
 
 !!! note "tl;dr:"

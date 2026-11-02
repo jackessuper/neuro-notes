@@ -4,7 +4,7 @@ Emoji: 🧲
 Description: What each sequence is for, in one line each, and a short order to look at them in.
 Group: core
 Order: 50
-Draft: true
+Status: draft
 ---
 
 !!! note "tl;dr:"

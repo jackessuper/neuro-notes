@@ -2,7 +2,7 @@
 Title: Writing style guide
 Emoji: ✍️
 Description: Every formatting feature the site supports, in one page. Not linked from the navigation.
-Draft: true
+Status: draft
 ---
 
 This page is the kitchen sink. Copy from it when writing a chapter. Chapters live in `content/guide/*.md` and start with a front-matter block between `---` lines (that is what the browser editor at app.pagescms.org reads and writes):
@@ -14,11 +14,17 @@ Emoji: 💉
 Description: One sentence shown on the chapter list and under the heading.
 Group: core
 Order: 60
-Draft: true
+Status: soon
 ---
 ```
 
-`Group` must be one of the keys in `config.GUIDE_GROUPS`; `Order` sorts within the group. Remove `Draft` (or set it to `false`) once the chapter is reviewed.
+`Group` must be one of the keys in `config.GUIDE_GROUPS`; `Order` sorts within the group. `Status` is how far the chapter has got, and every chapter list on the site shows it:
+
+| Status | Shows as | Use it when |
+|---|---|---|
+| `soon` | Grey "Coming soon" badge | Not started. The page shows only the planned `##` headings, and prev/next skips it. |
+| `draft` | Yellow "Draft" badge | Written, still being checked. |
+| `ready` | Green "Ready" badge | Written and reviewed. |
 
 ## Headings
 

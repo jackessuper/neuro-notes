@@ -13,7 +13,7 @@ content:
     exclude: [index.md]
     filename: "{primary}.md"
     view:
-      fields: [Title, Group, Order, Draft]
+      fields: [Title, Group, Order, Status]
       primary: Title
       sort: [Group, Order, Title]
       search: [Title, Description]
@@ -44,10 +44,16 @@ content:
         description: Sort position within the group (10, 20, 30 ...).
         options:
           min: 0
-      - name: Draft
-        type: boolean
-        default: true
-        description: On = shows the "Draft, not yet reviewed" badge.
+      - name: Status
+        type: select
+        required: true
+        default: draft
+        description: "Ready = written and reviewed. Draft = written, still being checked (shows a yellow Draft badge). Coming soon = not started: the page shows only the planned ## headings and prev/next skips it."
+        options:
+          values:
+            - { name: ready, label: "Ready" }
+            - { name: draft, label: "Draft" }
+            - { name: soon, label: "Coming soon" }
       - name: body
         type: code
         label: Chapter (Markdown)
@@ -82,5 +88,11 @@ content:
       - { name: Title, type: string, required: true }
       - { name: Emoji, type: string }
       - { name: Description, type: string }
-      - { name: Draft, type: boolean }
+      - name: Status
+        type: select
+        options:
+          values:
+            - { name: ready, label: "Ready" }
+            - { name: draft, label: "Draft" }
+            - { name: soon, label: "Coming soon" }
       - { name: body, type: code, label: Page (Markdown), options: { format: markdown } }

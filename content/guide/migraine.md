@@ -4,7 +4,7 @@ Emoji: 🌩️
 Description: Diagnosis, acute treatment, prevention and the conversation about medication overuse.
 Group: headache
 Order: 20
-Draft: true
+Status: soon
 ---
 
 !!! todo "Chapter not written yet"

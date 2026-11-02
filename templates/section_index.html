@@ -5,14 +5,19 @@
   {% if page.description %}<p class="lede">{{ page.description }}</p>{% endif %}
   {{ page.html|safe }}
   <h2 id="chapters">Chapters 📚</h2>
+  <ul class="status-key">
+    {% for s in summary %}
+    <li><span class="badge {{ s.key }}">{{ s.label }}</span> <span class="status-blurb">{{ s.blurb }} <span class="status-count">({{ s.count }})</span></span></li>
+    {% endfor %}
+  </ul>
   {% for label, chapters in groups %}
   <section class="chapter-group">
     <h3>{{ label }}</h3>
     <ol class="chapter-list">
       {% for c in chapters %}
-      <li>
+      <li data-status="{{ c.status }}">
         <a href="{{ root }}{{ c.url }}">{% if c.emoji %}<span aria-hidden="true">{{ c.emoji }}</span> {% endif %}{{ c.title }}</a>
-        {% if c.draft %}<span class="badge draft">Draft</span>{% endif %}
+        <span class="badge {{ c.status }}">{{ status_info[c.status].label }}</span>
         {% if c.description %}<span class="chapter-desc">{{ c.description }}</span>{% endif %}
       </li>
       {% endfor %}

@@ -38,22 +38,32 @@ def write(path: Path, text: str) -> Path:
 
 @pytest.fixture
 def content(tmp_path):
-    """A minimal content tree: home, guide index, three chapters across two groups."""
+    """A minimal content tree: home, guide index, four chapters across two groups.
+
+    Statuses in chapter order: alpha draft, beta ready, gamma ready, delta coming soon.
+    """
     root = tmp_path / "content"
     write(root / "index.md", "Title: Welcome\n\n# Welcome 👋\n\nHome body.\n")
     write(root / "guide" / "index.md", "Title: Survival Guide\nEmoji: 🧭\n\nIntro.\n")
     write(
         root / "guide" / "beta.md",
-        "Title: Beta chapter\nEmoji: 🅱️\nDescription: Second in core.\nGroup: core\nOrder: 20\n\n"
+        "Title: Beta chapter\nEmoji: 🅱️\nDescription: Second in core.\nGroup: core\nOrder: 20\nStatus: ready\n\n"
         "## First heading\n\nText.\n\n## Second heading\n\nMore.\n",
     )
     write(
         root / "guide" / "alpha.md",
-        'Title: Alpha chapter\nGroup: core\nOrder: 10\nDraft: true\n\n!!! warning "Careful"\n    Watch out.\n\nBody.\n',
+        "Title: Alpha chapter\nGroup: core\nOrder: 10\nStatus: draft\n\n"
+        '!!! warning "Careful"\n    Watch out.\n\nBody.\n',
     )
     write(
         root / "guide" / "gamma.md",
-        "Title: Gamma chapter\nGroup: stroke\nOrder: 5\n\n| a | b |\n|---|---|\n| 1 | 2 |\n",
+        "Title: Gamma chapter\nGroup: stroke\nOrder: 5\nStatus: ready\n\n| a | b |\n|---|---|\n| 1 | 2 |\n",
+    )
+    write(
+        root / "guide" / "delta.md",
+        "Title: Delta chapter\nDescription: Not written yet.\nGroup: stroke\nOrder: 10\nStatus: soon\n\n"
+        '!!! todo "Chapter not written yet"\n    Skeleton note for the author.\n\n'
+        "## Planned one\n\n*Coming soon.*\n\n## Planned two\n\n*Coming soon.*\n",
     )
     return root
 

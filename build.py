@@ -53,11 +53,19 @@ class Page:
     description: str = ""
     group: str = ""
     order: int = 999
-    draft: bool = False
+    status: str = "ready"  # a key of config.STATUSES
 
     @property
     def is_index(self) -> bool:
         return self.slug == "index"
+
+    @property
+    def draft(self) -> bool:
+        return self.status == "draft"
+
+    @property
+    def is_soon(self) -> bool:
+        return self.status == "soon"
 
     @property
     def url(self) -> str:
@@ -118,6 +126,18 @@ def _as_bool(value: str) -> bool:
     return str(value).strip().lower() in {"true", "yes", "1", "on"}
 
 
+def _status(meta: dict, rel: Path) -> str:
+    """`Status:` wins; pages written before it existed fall back to the old `Draft:` flag."""
+    keys = [key for key, _label, _blurb in config.STATUSES]
+    raw = meta.get("status")
+    if raw is None:
+        return "draft" if _as_bool(meta.get("draft", "false")) else "ready"
+    status = raw.strip().lower()
+    if status not in keys:
+        raise ValueError(f"{rel}: unknown 'Status:' {raw!r}; known: {keys}")
+    return status
+
+
 def load_page(source: Path, content_dir: Path) -> Page:
     text = source.read_text(encoding="utf-8")
     meta, html, toc = parse_markdown(text)
@@ -145,7 +165,7 @@ def load_page(source: Path, content_dir: Path) -> Page:
         description=meta.get("description", ""),
         group=meta.get("group", ""),
         order=order,
-        draft=_as_bool(meta.get("draft", "false")),
+        status=_status(meta, rel),
     )
 
 
@@ -178,6 +198,22 @@ def grouped_chapters(chapters: list, groups: list) -> list:
     if loose:
         out.append(("Other chapters", loose))
     return out
+
+
+def status_summary(chapters: list) -> list:
+    """One entry per status in config order: key, label, blurb and how many chapters have it."""
+    return [
+        {"key": key, "label": label, "blurb": blurb, "count": sum(1 for c in chapters if c.status == key)}
+        for key, label, blurb in config.STATUSES
+    ]
+
+
+def readable_neighbours(chapters: list, page: Page) -> tuple:
+    """Previous and next chapters that are not `soon`, so the pager never lands on a placeholder."""
+    idx = chapters.index(page)
+    prev = next((c for c in reversed(chapters[:idx]) if not c.is_soon), None)
+    nxt = next((c for c in chapters[idx + 1 :] if not c.is_soon), None)
+    return prev, nxt
 
 
 def _jinja_env(templates_dir: Path) -> Environment:
@@ -222,11 +258,14 @@ def build_site(
         "sections": sections,
         "feedback_href": feedback_href,
         "year": date.today().year,
+        "status_info": {s["key"]: s for s in status_summary([])},
+        "noindex": False,
     }
 
     for page in pages:
         ctx = dict(base_ctx, page=page, root=page.root)
         if page.section == "" and page.is_index:
+            ctx.update(tallies={slug: status_summary(chs) for slug, chs in section_chapters.items()})
             template = env.get_template("home.html")
         elif page.section == "":
             template = env.get_template("page.html")
@@ -237,18 +276,21 @@ def build_site(
             ctx.update(
                 section=section_by_slug[page.section],
                 groups=grouped_chapters(chapters, guide_groups),
+                summary=status_summary(chapters),
             )
             template = env.get_template("section_index.html")
         else:
             if page.section not in section_by_slug:
                 raise ValueError(f"{page.rel_path}: section {page.section!r} is not listed in config.SECTIONS")
-            chapters = section_chapters[page.section]
-            idx = chapters.index(page)
+            prev, nxt = readable_neighbours(section_chapters[page.section], page)
+            h2s = [t for t in page.toc if t["level"] == 2]
             ctx.update(
                 section=section_by_slug[page.section],
-                prev=chapters[idx - 1] if idx > 0 else None,
-                next=chapters[idx + 1] if idx + 1 < len(chapters) else None,
-                show_toc=sum(1 for t in page.toc if t["level"] == 2) >= 2,
+                prev=prev,
+                next=nxt,
+                show_toc=len(h2s) >= 2 and not page.is_soon,
+                planned=[t["name"] for t in h2s] if page.is_soon else [],
+                noindex=page.is_soon,
             )
             template = env.get_template("chapter.html")
 

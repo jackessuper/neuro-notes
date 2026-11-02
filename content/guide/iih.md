@@ -4,7 +4,7 @@ Emoji: 👁️
 Description: Recognising it, confirming it, protecting vision and managing it long term.
 Group: headache
 Order: 30
-Draft: true
+Status: soon
 ---
 
 !!! todo "Chapter not written yet"

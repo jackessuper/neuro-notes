@@ -4,7 +4,7 @@ Emoji: 🤕
 Description: Red flags, the secondary causes you cannot miss, and a practical approach to the rest.
 Group: headache
 Order: 10
-Draft: true
+Status: soon
 ---
 
 !!! todo "Chapter not written yet"

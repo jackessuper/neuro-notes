@@ -4,7 +4,7 @@ Emoji: 💉
 Description: Consent, contraindications, positioning, technique and what to send.
 Group: core
 Order: 60
-Draft: true
+Status: soon
 ---
 
 !!! todo "Chapter not written yet"
