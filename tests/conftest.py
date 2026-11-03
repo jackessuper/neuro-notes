@@ -57,7 +57,8 @@ def content(tmp_path):
     )
     write(
         root / "guide" / "gamma.md",
-        "Title: Gamma chapter\nGroup: stroke\nOrder: 5\nStatus: ready\n\n| a | b |\n|---|---|\n| 1 | 2 |\n",
+        "Title: Gamma chapter\nBanner: Gamma short\nEmoji2: 🔥\nGroup: stroke\nOrder: 5\nStatus: ready\n\n"
+        "| a | b |\n|---|---|\n| 1 | 2 |\n",
     )
     write(
         root / "guide" / "delta.md",

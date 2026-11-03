@@ -1,5 +1,6 @@
 ---
 Title: Building a neurological differential
+Banner: Neurological differential
 Emoji: 🧩
 Description: Tempo plus localisation gives you the syndrome; syndrome plus context gives you the differential.
 Group: core

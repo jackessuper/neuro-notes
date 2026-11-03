@@ -12,7 +12,7 @@ Clinical content is written or reviewed by the clinician. Every chapter has a `S
 python3 build.py              # render content/ -> site/
 python3 build.py serve        # build, serve at http://127.0.0.1:5017/, rebuild on save
 python3 build.py build --out /tmp/site
-python3 -m pytest tests/ -v   # 51 tests, build into tmp_path only
+python3 -m pytest tests/ -v   # 56 tests, build into tmp_path only
 ```
 
 Config is env vars with defaults (`config.py`; `.env` is read if present, see `.env.example`): `SITE_NAME`, `SITE_TAGLINE`, `SITE_AUTHOR`, `FEEDBACK_EMAIL`, `GOATCOUNTER_CODE`, `SITE_URL`, `PORT`, `FAVICON_EMOJI`.
@@ -25,7 +25,7 @@ content/                 Markdown source (one directory deep: <section>/<page>.m
   style-guide.md         Kitchen-sink reference for authors; built at /style-guide.html, not in nav
   guide/index.md         Survival Guide landing page (chapter list is generated)
   guide/<slug>.md        One chapter each
-templates/               Jinja2: base.html, home.html, page.html, section_index.html, chapter.html
+templates/               Jinja2: base.html, home.html, page.html, section_index.html, chapter.html, _banner.html (the billboard; included by the last two)
 static/style.css         The only stylesheet (copied to site/static/); images go in static/images/
 build.py                 Loader, renderer, dev server with a 1 s mtime-poll watcher
 config.py                Settings + SECTIONS (nav/home cards) + GUIDE_GROUPS (chapter grouping) + STATUSES
@@ -40,14 +40,16 @@ Front matter is python-markdown `meta` style (`Key: value` lines) **between `---
 | Key | Required | Meaning |
 |---|---|---|
 | `Title` | yes | Page title (h1 + `<title>`); build fails without it |
-| `Emoji` | no | Shown after the title and in chapter lists |
+| `Emoji` | no | Shown in chapter lists and tiled across the page's banner |
+| `Banner` | no | Short title for the banner box; the `Title` when absent (e.g. differential: "Neurological differential") |
+| `Emoji2` | no | Second banner tile, alternating with `Emoji`; the site emoji (`FAVICON_EMOJI`, 🧠) when absent — the same pairing gasnotes.net uses |
 | `Description` | no | Chapter-list subtitle and meta description (not shown on the chapter page itself) |
 | `Group` | chapters | Key from `config.GUIDE_GROUPS` (`core`, `stroke`, `headache`); unknown keys fail the build |
 | `Order` | chapters | Integer sort key within the group (fails the build if not an integer) |
 | `Status` | chapters | Key from `config.STATUSES`: `ready` (green badge in chapter lists only), `draft` (yellow "Draft – not yet reviewed" badge), `soon` (grey "Coming soon" badge). Case-insensitive; unknown values fail the build; a test requires every real chapter to set it |
 | `Draft` | legacy | Only read when `Status` is absent: `true` → `draft`, otherwise `ready` |
 
-Chapter order on the index and for prev/next pills = group order, then `Order`, then title. The pills (`build.readable_neighbours`) **skip `soon` chapters**. A `soon` chapter's page shows a "Not written yet" box listing its `##` headings instead of the body (the skeleton and its `!!! todo` stay in the source for the author) and gets `<meta name="robots" content="noindex">`. Status shows as a badge on every chapter-list row, in a key with counts above the chapter list, and as counts on the home-page section card. A chapter page is Gas Notes-plain: title, then body (no breadcrumb, lede or contents box; user decision 2026-11-03), with a badge under the title only for `draft` and `soon`, never for `ready`. Files starting with `_` are ignored. Nesting deeper than `section/page.md` fails the build.
+Chapter order on the index and for prev/next pills = group order, then `Order`, then title. The pills (`build.readable_neighbours`) **skip `soon` chapters**. A `soon` chapter's page shows a "Not written yet" box listing its `##` headings instead of the body (the skeleton and its `!!! todo` stay in the source for the author) and gets `<meta name="robots" content="noindex">`. Status shows as a badge on every chapter-list row, in a key with counts above the chapter list, and as counts on the home-page section card. A chapter page (and the section index) opens with the Gas Notes-style **banner** — `templates/_banner.html`: the `Banner`/`Title` in white over a 2×2 checkerboard of `Emoji` and `Emoji2`, which `build.banner_tiles()` emits as a percent-encoded SVG data URI in the `style` attribute (gasnotes.net's own trick; browsers draw the emoji with the system colour font) — then straight into the body: no plain h1, breadcrumb, lede or contents box (user decisions 2026-11-03). A badge sits under the banner only for `draft` and `soon`, never for `ready`. The home page keeps its own hero. Files starting with `_` are ignored. Nesting deeper than `section/page.md` fails the build.
 
 Markdown extensions: `meta`, `toc` (h2–h3; gives headings their `id`s for deep links and supplies a `soon` page's planned list), `tables`, `admonition` (`!!! note|tip|warning|danger|todo "Title"`), `attr_list`, `md_in_html`, `fenced_code`, `sane_lists`, `smarty`. Every `<table>` is auto-wrapped in `<div class="table-scroll">` by `build.wrap_tables()` so wide tables pan sideways on phones (author-wrapped tables are not double-wrapped). Planned-section names are rendered `|safe` because `smarty` emits entities. The full feature set with examples is `content/style-guide.md`.
 
@@ -59,7 +61,7 @@ GoatCounter is only emitted when `GOATCOUNTER_CODE` is set; the feedback link (n
 
 ## Editing in the browser (Pages CMS)
 
-`.pages.yml` at the repo root configures [Pages CMS](https://app.pagescms.org) (hosted; sign in with GitHub, install its GitHub App on `jackessuper` for this repo). It lists the Survival Guide chapters as a collection (`content/guide`, front-matter fields as form inputs: Title, Emoji, Description, Group select, Order, Status select defaulting to draft) plus the home page, guide landing page and style guide as single files. The body is a Markdown **code** field, not rich-text, so the `!!! note` callouts and tables survive a save untouched. Saving commits to `main`, which triggers the Pages deploy (about a minute). Field names must match the front-matter keys' capitalisation exactly; `tests/test_build.py::test_pages_cms_config_covers_every_front_matter_key` checks the config against `config.GUIDE_GROUPS` and `config.STATUSES`, and PyYAML is in `requirements.txt` only for that test.
+`.pages.yml` at the repo root configures [Pages CMS](https://app.pagescms.org) (hosted; sign in with GitHub, install its GitHub App on `jackessuper` for this repo). It lists the Survival Guide chapters as a collection (`content/guide`, front-matter fields as form inputs: Title, Banner, Emoji, Emoji2, Description, Group select, Order, Status select defaulting to draft) plus the home page, guide landing page and style guide as single files. The body is a Markdown **code** field, not rich-text, so the `!!! note` callouts and tables survive a save untouched. Saving commits to `main`, which triggers the Pages deploy (about a minute). Field names must match the front-matter keys' capitalisation exactly; `tests/test_build.py::test_pages_cms_config_covers_every_front_matter_key` checks the config against `config.GUIDE_GROUPS` and `config.STATUSES`, and PyYAML is in `requirements.txt` only for that test.
 
 ## Deployment
 

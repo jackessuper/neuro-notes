@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block main %}
 <article class="chapter">
-  <h1>{{ page.title }}{% if page.emoji %} {{ page.emoji }}{% endif %}</h1>
+  {% include "_banner.html" %}
   {% if page.status == "draft" %}<p class="badge draft">Draft – not yet reviewed</p>
   {% elif page.is_soon %}<p class="badge soon">Coming soon</p>{% endif %}
   {% if page.is_soon %}

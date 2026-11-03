@@ -10,15 +10,17 @@ This page is the kitchen sink. Copy from it when writing a chapter. Chapters liv
 ```
 ---
 Title: How to do an LP
+Banner: Lumbar puncture
 Emoji: 💉
-Description: One sentence shown on the chapter list and under the heading.
+Emoji2: 🧠
+Description: One sentence shown on the chapter list and as the search-engine summary.
 Group: core
 Order: 60
 Status: soon
 ---
 ```
 
-`Group` must be one of the keys in `config.GUIDE_GROUPS`; `Order` sorts within the group. `Status` is how far the chapter has got, and every chapter list on the site shows it:
+Every page opens with a Gas Notes-style banner: `Banner` (or the `Title` if you leave it out) in white over a checkerboard of `Emoji` and `Emoji2` (`Emoji2` defaults to the site's 🧠). Keep `Banner` short — two or three words read best on a phone. `Group` must be one of the keys in `config.GUIDE_GROUPS`; `Order` sorts within the group. `Status` is how far the chapter has got, and every chapter list on the site shows it:
 
 | Status | Shows as | Use it when |
 |---|---|---|

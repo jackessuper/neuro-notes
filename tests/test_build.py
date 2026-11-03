@@ -1,8 +1,9 @@
 import re
+import urllib.parse
 
 import config
 import pytest
-from build import build_site, chapters_for, grouped_chapters, load_pages, parse_markdown
+from build import banner_tiles, build_site, chapters_for, grouped_chapters, load_pages, parse_markdown
 from conftest import GROUPS, SECTIONS, SETTINGS, build_with, write
 
 
@@ -220,12 +221,26 @@ def test_section_index_key_explains_and_counts_each_status(built):
     assert html.index('class="status-key"') < html.index("<h3>Core</h3>")
 
 
-def test_ready_chapter_page_is_title_then_body_like_gas_notes(built):
+def banner(html):
+    """The banner's (title, [tile emoji in checkerboard order]) from a built page."""
+    m = re.search(
+        r'<div class="banner" style="background-image:url\(([^)]+)\)">\s*<div class="banner-inner">\s*<h1>(.*?)</h1>',
+        html,
+    )
+    assert m, "no banner"
+    svg = urllib.parse.unquote(m.group(1).split(",", 1)[1])
+    return m.group(2), re.findall(r"<text[^>]*>([^<]*)</text>", svg)
+
+
+def test_ready_chapter_page_is_banner_then_body_like_gas_notes(built):
     out, _ = built
     html = read(out, "guide/beta.html")
     article = html.split("<article", 1)[1].split("</article>", 1)[0]
-    assert re.search(r'^[^>]*>\s*<h1>Beta chapter 🅱️</h1>\s*<h2 id="first-heading">', article)
+    assert re.search(r'^[^>]*>\s*<div class="banner"', article)
+    assert re.search(r'</div>\s*</div>\s*<h2 id="first-heading">', article)
     assert 'id="second-heading"' in article
+    assert not re.search(r"<article[^>]*>\s*<h1>", article)
+    assert "<h1>Beta chapter 🅱️</h1>" not in html
     assert '<meta name="description" content="Second in core.">' in html
     assert pager(html) == {"prev": "alpha", "next": "gamma"}
     assert 'href="../static/style.css"' in html
@@ -262,6 +277,43 @@ def test_coming_soon_chapter_shows_planned_sections_instead_of_skeleton(built):
     assert '<h2 id="planned-one"' not in html
     assert '<meta name="robots" content="noindex">' in html
     assert "noindex" not in read(out, "guide/beta.html")
+
+
+def test_banner_tiles_page_emoji_with_site_emoji_in_a_checkerboard(built):
+    out, _ = built
+    title, tiles = banner(read(out, "guide/beta.html"))
+    assert title == "Beta chapter"
+    assert tiles == ["🅱️", "🧠", "🧠", "🅱️"]
+    assert "<title>Beta chapter – Test Notes</title>" in read(out, "guide/beta.html")
+
+
+def test_banner_front_matter_sets_short_title_and_second_emoji(built):
+    out, _ = built
+    html = read(out, "guide/gamma.html")
+    assert banner(html) == ("Gamma short", ["🧠", "🔥", "🔥", "🧠"])
+    assert "<title>Gamma chapter – Test Notes</title>" in html
+
+
+def test_banner_tiles_percent_encodes_the_svg_for_a_style_attribute():
+    uri = banner_tiles("🧩", "🧠")
+    assert uri.startswith("data:image/svg+xml,%3Csvg")
+    assert not re.search(r"""[<>"' #]""", uri)
+    assert urllib.parse.unquote(uri).count("<text") == 4
+
+
+def test_coming_soon_and_draft_pages_keep_their_badge_under_the_banner(built):
+    out, _ = built
+    for slug, badge in (("alpha", "draft"), ("delta", "soon")):
+        html = read(out, f"guide/{slug}.html")
+        assert html.index('class="banner"') < html.index(f'<p class="badge {badge}">')
+
+
+def test_section_index_has_banner_instead_of_plain_heading(built):
+    out, _ = built
+    html = read(out, "guide/index.html")
+    assert banner(html) == ("Survival Guide", ["🧭", "🧠", "🧠", "🧭"])
+    assert "<h1>Survival Guide 🧭</h1>" not in html
+    assert 'class="lede"' not in html
 
 
 def test_ready_chapter_page_has_no_status_badge(built):
@@ -445,7 +497,7 @@ def test_pages_cms_config_covers_every_front_matter_key():
     chapters = next(c for c in cfg["content"] if c["name"] == "chapters")
     assert chapters["path"] == "content/guide"
     names = {f["name"] for f in chapters["fields"]}
-    assert {"Title", "Emoji", "Description", "Group", "Order", "Status", "body"} <= names
+    assert {"Title", "Banner", "Emoji", "Emoji2", "Description", "Group", "Order", "Status", "body"} <= names
     group = next(f for f in chapters["fields"] if f["name"] == "Group")
     assert [v["name"] for v in group["options"]["values"]] == [k for k, _ in config.GUIDE_GROUPS]
     status = next(f for f in chapters["fields"] if f["name"] == "Status")

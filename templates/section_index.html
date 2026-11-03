@@ -1,8 +1,7 @@
 {% extends "base.html" %}
 {% block main %}
 <article>
-  <h1>{{ page.title }}{% if page.emoji %} {{ page.emoji }}{% endif %}</h1>
-  {% if page.description %}<p class="lede">{{ page.description }}</p>{% endif %}
+  {% include "_banner.html" %}
   {{ page.html|safe }}
   <h2 id="chapters">Chapters 📚</h2>
   <ul class="status-key">

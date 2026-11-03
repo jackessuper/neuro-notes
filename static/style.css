@@ -273,6 +273,31 @@ header {
 .chapter-desc { display: block; color: var(--muted); font-size: 1.05rem; }
 .chapter-list .badge { margin: 0 0 0 0.4em; }
 
+/* ---- Banner (the Gas Notes billboard): title over a 2x2 emoji checkerboard ---- */
+.banner {
+  margin: 1.5em 0 2em;
+  border-radius: 1.4em;
+  overflow: hidden;
+  background-color: var(--accent);
+  background-size: 130px;
+  background-repeat: repeat;
+  background-position: 60px 50px;
+}
+.banner-inner {
+  padding: clamp(1em, 18vw, 9em) 2em;
+  background: rgba(0, 0, 0, 0.65);
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.35);
+  text-align: center;
+}
+.banner h1 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: #fff;
+  font-size: clamp(1.5em, 6vw, 3em);
+  line-height: 1.1;
+}
+
 /* ---- Chapter chrome ---- */
 .pagination {
   display: flex;
@@ -309,4 +334,7 @@ footer p { font-size: 1rem; margin: 0.4em 0; }
   .noprint { display: none !important; }
   body { font-size: 11pt; }
   .admonition { border: 1px solid #000; background: none !important; color: #000 !important; }
+  .banner { background: none !important; border-radius: 0; }
+  .banner-inner { background: none; box-shadow: none; padding: 0; text-align: left; }
+  .banner h1 { color: #000; }
 }

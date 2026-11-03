@@ -24,9 +24,15 @@ content:
       - name: Title
         type: string
         required: true
+      - name: Banner
+        type: string
+        description: "Short title for the banner box at the top of the page. Leave blank to use the Title."
       - name: Emoji
         type: string
-        description: One emoji, shown after the title and in the chapter list.
+        description: One emoji, shown in the chapter list and tiled across the page's banner.
+      - name: Emoji2
+        type: string
+        description: "Second emoji for the banner's checkerboard (it alternates with Emoji). Leave blank for the site's 🧠."
       - name: Description
         type: string
         description: "One sentence: the subtitle in the chapter list and the search-engine summary (not shown on the chapter page)."
@@ -67,7 +73,9 @@ content:
     path: content/guide/index.md
     fields:
       - { name: Title, type: string, required: true }
+      - { name: Banner, type: string, description: "Short title for the banner box; blank = Title." }
       - { name: Emoji, type: string }
+      - { name: Emoji2, type: string, description: "Second banner emoji; blank = the site's 🧠." }
       - { name: Description, type: string }
       - { name: body, type: code, label: Intro (Markdown), options: { format: markdown } }
 

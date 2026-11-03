@@ -17,6 +17,7 @@ import time
 import urllib.parse
 from dataclasses import dataclass, field
 from datetime import date
+from html import escape as html_escape
 from pathlib import Path
 
 import config
@@ -50,6 +51,8 @@ class Page:
     meta: dict
     toc: list = field(default_factory=list)
     emoji: str = ""
+    emoji2: str = ""  # second banner tile; the site emoji when empty
+    banner: str = ""  # short banner title; the title when empty
     description: str = ""
     group: str = ""
     order: int = 999
@@ -162,11 +165,33 @@ def load_page(source: Path, content_dir: Path) -> Page:
         meta=meta,
         toc=toc,
         emoji=meta.get("emoji", ""),
+        emoji2=meta.get("emoji2", ""),
+        banner=meta.get("banner", ""),
         description=meta.get("description", ""),
         group=meta.get("group", ""),
         order=order,
         status=_status(meta, rel),
     )
+
+
+def banner_tiles(first: str, second: str) -> str:
+    """Background for the Gas Notes-style banner: a 2x2 emoji checkerboard SVG as a data URI.
+
+    Percent-encoded (quotes, spaces and angle brackets included) so it can sit inside a
+    style attribute; browsers draw the emoji with the system colour font.
+    """
+    cells = ((4, 15, first), (24, 15, second), (4, 35, second), (24, 35, first))
+    texts = "".join(f"<text x='{x}' y='{y}' font-size='10'>{html_escape(e)}</text>" for x, y, e in cells)
+    svg = f"<svg xmlns='http://www.w3.org/2000/svg' width='40' height='40'>{texts}</svg>"
+    return "data:image/svg+xml," + urllib.parse.quote(svg, safe="=:/")
+
+
+def banner_for(page: Page, settings: dict) -> dict:
+    fallback = settings.get("favicon_emoji", "")
+    return {
+        "title": page.banner or page.title,
+        "tiles": banner_tiles(page.emoji or fallback, page.emoji2 or fallback),
+    }
 
 
 def load_pages(content_dir: Path) -> list:
@@ -274,6 +299,7 @@ def build_site(
                 raise ValueError(f"{page.rel_path}: section {page.section!r} is not listed in config.SECTIONS")
             chapters = section_chapters[page.section]
             ctx.update(
+                banner=banner_for(page, settings),
                 section=section_by_slug[page.section],
                 groups=grouped_chapters(chapters, guide_groups),
                 summary=status_summary(chapters),
@@ -285,6 +311,7 @@ def build_site(
             prev, nxt = readable_neighbours(section_chapters[page.section], page)
             h2s = [t for t in page.toc if t["level"] == 2]
             ctx.update(
+                banner=banner_for(page, settings),
                 section=section_by_slug[page.section],
                 prev=prev,
                 next=nxt,
