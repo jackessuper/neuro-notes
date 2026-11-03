@@ -29,7 +29,7 @@ content:
         description: One emoji, shown after the title and in the chapter list.
       - name: Description
         type: string
-        description: "One sentence: the lede under the title and the subtitle in the chapter list."
+        description: "One sentence: the subtitle in the chapter list and the search-engine summary (not shown on the chapter page)."
       - name: Group
         type: select
         required: true

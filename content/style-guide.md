@@ -24,11 +24,11 @@ Status: soon
 |---|---|---|
 | `soon` | Grey "Coming soon" badge | Not started. The page shows only the planned `##` headings, and prev/next skips it. |
 | `draft` | Yellow "Draft" badge | Written, still being checked. |
-| `ready` | Green "Ready" badge | Written and reviewed. |
+| `ready` | Green "Ready" badge in the chapter list; nothing on the page itself | Written and reviewed. |
 
 ## Headings
 
-Use `##` for the main sections of a chapter (the page title is already the `h1`). Two or more `##` headings produce an automatic "On this page" box. Use `###` for sub-sections. Emoji in headings are fine and encouraged: `## Anaphylaxis 🐝`.
+Use `##` for the main sections of a chapter (the page title is already the `h1`). Use `###` for sub-sections. Emoji in headings are fine and encouraged: `## Anaphylaxis 🐝`.
 
 ## Callouts
 

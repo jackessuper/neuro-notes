@@ -12,7 +12,7 @@ Clinical content is written or reviewed by the clinician. Every chapter has a `S
 python3 build.py              # render content/ -> site/
 python3 build.py serve        # build, serve at http://127.0.0.1:5017/, rebuild on save
 python3 build.py build --out /tmp/site
-python3 -m pytest tests/ -v   # 48 tests, build into tmp_path only
+python3 -m pytest tests/ -v   # 51 tests, build into tmp_path only
 ```
 
 Config is env vars with defaults (`config.py`; `.env` is read if present, see `.env.example`): `SITE_NAME`, `SITE_TAGLINE`, `SITE_AUTHOR`, `FEEDBACK_EMAIL`, `GOATCOUNTER_CODE`, `SITE_URL`, `PORT`, `FAVICON_EMOJI`.
@@ -41,15 +41,15 @@ Front matter is python-markdown `meta` style (`Key: value` lines) **between `---
 |---|---|---|
 | `Title` | yes | Page title (h1 + `<title>`); build fails without it |
 | `Emoji` | no | Shown after the title and in chapter lists |
-| `Description` | no | Lede under the title, chapter-list subtitle, meta description |
+| `Description` | no | Chapter-list subtitle and meta description (not shown on the chapter page itself) |
 | `Group` | chapters | Key from `config.GUIDE_GROUPS` (`core`, `stroke`, `headache`); unknown keys fail the build |
 | `Order` | chapters | Integer sort key within the group (fails the build if not an integer) |
-| `Status` | chapters | Key from `config.STATUSES`: `ready` (green badge), `draft` (yellow "Draft – not yet reviewed" badge), `soon` (grey "Coming soon" badge). Case-insensitive; unknown values fail the build; a test requires every real chapter to set it |
+| `Status` | chapters | Key from `config.STATUSES`: `ready` (green badge in chapter lists only), `draft` (yellow "Draft – not yet reviewed" badge), `soon` (grey "Coming soon" badge). Case-insensitive; unknown values fail the build; a test requires every real chapter to set it |
 | `Draft` | legacy | Only read when `Status` is absent: `true` → `draft`, otherwise `ready` |
 
-Chapter order on the index and for prev/next pills = group order, then `Order`, then title. The pills (`build.readable_neighbours`) **skip `soon` chapters**. A `soon` chapter's page shows a "Not written yet" box listing its `##` headings instead of the body (the skeleton and its `!!! todo` stay in the source for the author) and gets `<meta name="robots" content="noindex">`. Status shows as a badge on every chapter-list row and chapter page, in a key with counts above the chapter list, and as counts on the home-page section card. Files starting with `_` are ignored. Nesting deeper than `section/page.md` fails the build.
+Chapter order on the index and for prev/next pills = group order, then `Order`, then title. The pills (`build.readable_neighbours`) **skip `soon` chapters**. A `soon` chapter's page shows a "Not written yet" box listing its `##` headings instead of the body (the skeleton and its `!!! todo` stay in the source for the author) and gets `<meta name="robots" content="noindex">`. Status shows as a badge on every chapter-list row, in a key with counts above the chapter list, and as counts on the home-page section card. A chapter page is Gas Notes-plain: title, then body (no breadcrumb, lede or contents box; user decision 2026-11-03), with a badge under the title only for `draft` and `soon`, never for `ready`. Files starting with `_` are ignored. Nesting deeper than `section/page.md` fails the build.
 
-Markdown extensions: `meta`, `toc` (h2–h3; an "On this page" box appears when a chapter has ≥2 h2s), `tables`, `admonition` (`!!! note|tip|warning|danger|todo "Title"`), `attr_list`, `md_in_html`, `fenced_code`, `sane_lists`, `smarty`. Every `<table>` is auto-wrapped in `<div class="table-scroll">` by `build.wrap_tables()` so wide tables pan sideways on phones (author-wrapped tables are not double-wrapped). TOC entries are rendered `|safe` because `smarty` emits entities. The full feature set with examples is `content/style-guide.md`.
+Markdown extensions: `meta`, `toc` (h2–h3; gives headings their `id`s for deep links and supplies a `soon` page's planned list), `tables`, `admonition` (`!!! note|tip|warning|danger|todo "Title"`), `attr_list`, `md_in_html`, `fenced_code`, `sane_lists`, `smarty`. Every `<table>` is auto-wrapped in `<div class="table-scroll">` by `build.wrap_tables()` so wide tables pan sideways on phones (author-wrapped tables are not double-wrapped). Planned-section names are rendered `|safe` because `smarty` emits entities. The full feature set with examples is `content/style-guide.md`.
 
 ### Templates and links
 

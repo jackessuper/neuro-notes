@@ -1,12 +1,9 @@
 {% extends "base.html" %}
 {% block main %}
 <article class="chapter">
-  <p class="breadcrumb noprint"><a href="{{ root }}{{ section.slug }}/index.html">{{ section.title }}</a></p>
   <h1>{{ page.title }}{% if page.emoji %} {{ page.emoji }}{% endif %}</h1>
-  {% if page.status == "ready" %}<p class="badge ready">Ready – reviewed</p>
-  {% elif page.status == "draft" %}<p class="badge draft">Draft – not yet reviewed</p>
-  {% else %}<p class="badge soon">Coming soon</p>{% endif %}
-  {% if page.description %}<p class="lede">{{ page.description }}</p>{% endif %}
+  {% if page.status == "draft" %}<p class="badge draft">Draft – not yet reviewed</p>
+  {% elif page.is_soon %}<p class="badge soon">Coming soon</p>{% endif %}
   {% if page.is_soon %}
   <div class="admonition todo coming-soon">
     <p class="admonition-title">Not written yet</p>
@@ -21,18 +18,6 @@
     <p><a href="{{ root }}{{ section.slug }}/index.html">See which chapters are ready →</a></p>
   </div>
   {% else %}
-  {% if show_toc %}
-  <nav class="toc noprint" aria-label="On this page">
-    <details open>
-      <summary>On this page</summary>
-      <ol>
-        {% for t in page.toc if t.level == 2 %}
-        <li><a href="#{{ t.id }}">{{ t.name|safe }}</a></li>
-        {% endfor %}
-      </ol>
-    </details>
-  </nav>
-  {% endif %}
   {{ page.html|safe }}
   {% endif %}
 </article>

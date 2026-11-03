@@ -288,7 +288,6 @@ def build_site(
                 section=section_by_slug[page.section],
                 prev=prev,
                 next=nxt,
-                show_toc=len(h2s) >= 2 and not page.is_soon,
                 planned=[t["name"] for t in h2s] if page.is_soon else [],
                 noindex=page.is_soon,
             )

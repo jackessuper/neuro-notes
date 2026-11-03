@@ -220,15 +220,24 @@ def test_section_index_key_explains_and_counts_each_status(built):
     assert html.index('class="status-key"') < html.index("<h3>Core</h3>")
 
 
-def test_chapter_page_has_heading_description_toc_and_prev_next(built):
+def test_ready_chapter_page_is_title_then_body_like_gas_notes(built):
     out, _ = built
     html = read(out, "guide/beta.html")
-    assert "<h1>Beta chapter 🅷".replace("🅷", "🅱️") in html
-    assert '<p class="lede">Second in core.</p>' in html
-    assert 'aria-label="On this page"' in html
-    assert 'href="#first-heading"' in html and 'href="#second-heading"' in html
+    article = html.split("<article", 1)[1].split("</article>", 1)[0]
+    assert re.search(r'^[^>]*>\s*<h1>Beta chapter 🅱️</h1>\s*<h2 id="first-heading">', article)
+    assert 'id="second-heading"' in article
+    assert '<meta name="description" content="Second in core.">' in html
     assert pager(html) == {"prev": "alpha", "next": "gamma"}
     assert 'href="../static/style.css"' in html
+
+
+@pytest.mark.parametrize("slug", ["alpha", "beta", "gamma", "delta"])
+def test_no_chapter_page_has_breadcrumb_lede_or_contents_box(built, slug):
+    out, _ = built
+    html = read(out, f"guide/{slug}.html")
+    assert 'class="breadcrumb' not in html
+    assert 'class="lede"' not in html
+    assert 'aria-label="On this page"' not in html
 
 
 def test_first_and_last_readable_chapters_omit_missing_prev_next(built):
@@ -255,14 +264,12 @@ def test_coming_soon_chapter_shows_planned_sections_instead_of_skeleton(built):
     assert "noindex" not in read(out, "guide/beta.html")
 
 
-def test_ready_chapter_shows_ready_badge(built):
+def test_ready_chapter_page_has_no_status_badge(built):
     out, _ = built
-    html = read(out, "guide/beta.html")
-    assert '<p class="badge ready">Ready – reviewed</p>' in html
-    assert "badge draft" not in html
+    assert 'class="badge' not in read(out, "guide/beta.html")
 
 
-def test_toc_keeps_smart_quote_entities_unescaped(tmp_path):
+def test_planned_sections_keep_smart_quote_entities_unescaped(tmp_path):
     root = tmp_path / "c"
     write(root / "index.md", "Title: Home\n\nhi\n")
     write(
@@ -271,7 +278,7 @@ def test_toc_keeps_smart_quote_entities_unescaped(tmp_path):
     )
     write(
         root / "guide" / "q.md",
-        'Title: Q\nGroup: core\nOrder: 1\n\n## The four kinds of "diagnosis"\n\nx\n\n## Two\n\ny\n',
+        'Title: Q\nGroup: core\nOrder: 1\nStatus: soon\n\n## The four kinds of "diagnosis"\n\nx\n\n## Two\n\ny\n',
     )
     out = tmp_path / "o"
     build_site(
@@ -285,12 +292,7 @@ def test_toc_keeps_smart_quote_entities_unescaped(tmp_path):
     )
     html = read(out, "guide/q.html")
     assert "&amp;ldquo;" not in html
-    assert 'href="#the-four-kinds-of-diagnosis">The four kinds of &ldquo;diagnosis&rdquo;</a>' in html
-
-
-def test_chapter_without_two_h2s_has_no_toc(built):
-    out, _ = built
-    assert 'aria-label="On this page"' not in read(out, "guide/alpha.html")
+    assert '<li class="planned-item">The four kinds of &ldquo;diagnosis&rdquo;</li>' in html
 
 
 def test_draft_chapter_shows_badge_and_admonition_renders(built):
