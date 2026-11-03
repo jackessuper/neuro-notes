@@ -1,16 +1,12 @@
 ---
 Title: Building a neurological differential
-Banner: Neurological differential
+Banner: The Neurological DDx
 Emoji: 🧩
 Description: Tempo plus localisation gives you the syndrome; syndrome plus context gives you the differential.
 Group: core
 Order: 10
 Status: ready
 ---
-
-!!! note "tl;dr:"
-    **Tempo + Localisation = Syndrome**<br>
-    **Syndrome + Context = Differential diagnosis**
 
 In neurology, one complaint ("I can't walk properly") can have a range of different locations and different underlying causes. This causes a lot of neurophobia, but it shouldn't: Just like the rest of medicine, once you have a framework it is easy. If you can start by breaking things into syndromes and then working from there, things make a lot more sense.
 
